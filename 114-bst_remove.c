@@ -2,21 +2,28 @@
 
 
 /**
- * bst_search - searches for a value in a BST
- * @tree: a pointer to the root node of the tree where you will remove a node
- * @value: is the value to remove in the tree
- * Return: pointer to the node containing a value equals to value
+ * bst_search -  Searches for a specified value in a Binary Search Tree
+ * @tree: pointer to the root node of the Binary Search Tree
+ * @value: value to search for in the tree
+ * Return: Pointer to the node containing the specified value, or NULL if
+ * the value is not found or the tree is empty
  */
-bst_t *bst_search(bst_t *tree, int value)
+bst_t *bst_search(const bst_t *tree, int value)
 {
-	if (tree == NULL)
+	bst_t *node = (bst_t *)tree;
+
+	if (!tree)
 		return (NULL);
-	if (value == tree->n)
-		return (tree);
-	if (value < tree->n)
-		return (bst_search(tree->left, value));
-	if (value > tree->n)
-		return (bst_search(tree->right, value));
+
+	while (node)
+	{
+		if (value == node->n)
+			return (node);
+		if (value < node->n)
+			node = node->left;
+		else
+			node = node->right;
+	}
 	return (NULL);
 }
 
