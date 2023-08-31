@@ -36,7 +36,7 @@ int inorder(const binary_tree_t *tree, int *prev)
 }
 
 /**
- * binary_tree_height - calculate the height of a binary tree
+ * binarytree_height - calculate the height of a binary tree
  * @tree: the binary tree
  * Return: number of nodes
  */
@@ -55,8 +55,7 @@ size_t binarytree_height(const binary_tree_t *tree)
 }
 
 /**
- * binary_tree_balance - check if a binary tree is balanced or not
- * Description: check if all nodes have a left/right nodes
+ * binarytree_balance - check if a binary tree is balanced or not
  *
  * @tree: the binary tree
  * Return: 0 not balanced | 1 balanced
