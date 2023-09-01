@@ -1,123 +1,64 @@
 #include "binary_trees.h"
 
 /**
- * node_is_complete - Determines if a binary tree node is complete
- * @node: Node to evaluate
- * Return: 1 if its complete 0 if not
+ * count_nodes - Counts the nodes inside a tree
+ * @root: Pointer to the node
+ *
+ * Return: Number of nodes
  */
-int node_is_complete(const binary_tree_t *node)
+
+int count_nodes(binary_tree_t *root)
 {
-	if ((node && node->left && node->right))
-	{
-		return (1);
-	}
-	else
-	{
+	if (!root)
 		return (0);
-	}
+
+	return (1 + count_nodes(root->left) + count_nodes(root->right));
 }
+
 
 /**
- * binary_tree_height - Measures the height of a binary tree
- *@tree:  Pointer to the root node of the tree to measure the height
- * Return: If tree is NULL, the function returns 0.
+ * is_complete - Checks if a tree is complete
+ * @root: Pointer to the root of the tree
+ * @index: Index of the currently evaluated node
+ * @n: Total number of nodes in the tree
+ *
+ * Return: 1 if the tree is complete, 0 otherwise
  */
-size_t binary_tree_height(const binary_tree_t *tree)
+
+int is_complete(binary_tree_t *root, int index, int n)
 {
-	if (tree)
-	{
-		int left = 0, right = 0;
+	if (!root)
+		return (0);
 
-		if (tree->right)
-			right = 1 + binary_tree_height(tree->right);
-		if (tree->left)
-			left = 1 + binary_tree_height(tree->left);
-		if (left > right)
-			return (left);
-		return (right);
-	}
-	return (0);
+	if (index >= n)
+		return (0);
+	if (!root->left && !root->right)
+		return (1);
+	if (root->right && !root->left)
+		return (0);
+	if (root->left && !root->right)
+		return (is_complete(root->left, index * 2 + 1, n));
+
+	return (is_complete(root->left, index * 2 + 1, n) &&
+		is_complete(root->right, index * 2 + 2, n));
 }
-/**
- * check_complete_level - print node, especific level
- * @tree: pointer to the root node of the tree to traverse
- * @level: pointer to a function to call for each node.
- * Return: true if its complete
- */
-int check_complete_level(const binary_tree_t *tree, int level)
-{
-	if (tree)
-	{
-		int left_v = 0, right_v = 0;
 
-		if (level == 1)
-			return (node_is_complete(tree));
-		left_v = check_complete_level(tree->left, level - 1);
-		right_v = check_complete_level(tree->right, level - 1);
-		return (left_v || right_v);
-	}
-	return (0);
-}
-/**
- * check_left_level - Checks if a specific level contains a left node
- * @tree: Pointer to the root node of the tree to traverse
- * @flag:  Flag to determine if there's a left node
- * @level:  Level to evaluate
- * Return: True if it's complete, false otherwise
- */
-int check_left_level(const binary_tree_t *tree, int level, int *flag)
-{
-
-	if (tree)
-	{
-		if (level == 1)
-		{
-			if (*flag && tree->right == NULL)
-				*flag = 0;
-			if (*flag == 1 && tree->right == NULL && tree->left == NULL)
-				return (1);
-			if (tree->left == NULL && *flag)
-				return (0);
-			if (*flag == 0 && (tree->right || tree->left))
-				return (0);
-			return (1);
-		}
-		else
-		{
-			int left_v = 0, right_v = 0;
-
-			left_v = check_left_level(tree->left, level - 1, flag);
-			right_v = check_left_level(tree->right, level - 1, flag);
-			return (left_v && right_v);
-		}
-	}
-	return (0);
-}
 /**
  * binary_tree_is_complete -Checks if a binary tree is complete
- * @tree: Tree to evaluate for completeness
- * Return: 1 if its complete 0 if not
+ * @tree: Pointer to the root of the binary tree
+ *
+ * Return: 1 if the tree is complete, 0 otherwise
  */
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
-	int aux = 1, level = 1, t;
+	int nod;
+	binary_tree_t *root;
 
-	if (tree)
-	{
-		t = binary_tree_height(tree);
-		while (level < t  && aux)
-		{
-			aux = check_complete_level(tree, level);
-			level++;
-		}
-		if (t == 0)
-			return (1);
-		if (aux)
-			return (check_left_level(tree, t, &aux));
-	}
-	else
-	{
+	if (!tree)
 		return (0);
-	}
-	return (0);
+
+	root = (binary_tree_t *)tree;
+	nod = count_nodes(root);
+
+	return (is_complete(root, 0, nod));
 }
